@@ -73,7 +73,6 @@ export function Header({ mobileOnly = false }: HeaderProps) {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <span className="text-lg font-bold text-gradient">ablak</span>
-            <span className="text-xs text-zinc-500 font-mono">v1.0.0</span>
           </div>
 
           {/* Desktop nav */}

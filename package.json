@@ -33,6 +33,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "ablak-ts": "^1.0.0"
+    "ablak-ts": "^1.0.0",
+    "claude": "^0.1.1"
   }
 }

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { watchViewport } from "ablak";
 import { useSectionInView } from "../../hooks/useSectionInView";
-import { LiveBadge, CodeBlock } from "../ui";
+import { CodeBlock } from "../ui";
 import { PARALLAX_CODE } from "../../data";
 
 const LAYERS = [
@@ -71,7 +71,6 @@ export function ParallaxSection() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <LiveBadge />
             <span className="text-zinc-500 text-sm font-mono">
               velocity:{" "}
               <span ref={velRef} className="text-data font-bold">

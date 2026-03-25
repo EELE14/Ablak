@@ -4,8 +4,10 @@ import { Copy, Check, ExternalLink } from "lucide-react";
 import { watchViewport } from "ablak";
 import { CodeBlock } from "../ui";
 import { HERO_CODE } from "../../data";
+import { useSectionInView } from "../../hooks/useSectionInView";
 
 export function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const badgeRef = useRef<HTMLDivElement>(null);
@@ -15,8 +17,10 @@ export function HeroSection() {
   const codeRef = useRef<HTMLDivElement>(null);
 
   const [copied, setCopied] = useState(false);
+  const inView = useSectionInView(sectionRef);
 
   useEffect(() => {
+    if (!inView) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -107,7 +111,7 @@ export function HeroSection() {
       stopAblak();
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [inView]);
 
   function handleCopy() {
     void navigator.clipboard.writeText("npm install ablak-ts").then(() => {
@@ -117,7 +121,10 @@ export function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-start md:justify-center pt-28 md:pt-0">
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex flex-col items-center justify-start md:justify-center pt-28 md:pt-0"
+    >
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
@@ -139,7 +146,7 @@ export function HeroSection() {
             frame. Scroll, mouse, position, orientation, all in one callback.
           </p>
           <p className="text-zinc-500 mb-10">
-            Framework-agnostic · TypeScript · 2 kB gzipped
+            No dependencies. No opinions. Pure viewport.
           </p>
         </div>
 

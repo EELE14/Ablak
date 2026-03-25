@@ -6,7 +6,7 @@ import {
   recalibrateOrientation,
 } from "ablak";
 import { useSectionInView } from "../../hooks/useSectionInView";
-import { LiveBadge, CodeBlock } from "../ui";
+import { CodeBlock } from "../ui";
 import { cn } from "../../lib/utils";
 import { TILT_CODE } from "../../data";
 
@@ -83,9 +83,7 @@ export function TiltSection() {
           alphaRef.current.textContent = orientation.alpha.toFixed(1);
 
         if (codeRef.current && sectionRef.current) {
-          const sectionTop =
-            scroll.top + sectionRef.current.getBoundingClientRect().top;
-          const offset = scroll.top - sectionTop;
+          const offset = scroll.top - sectionRef.current.offsetTop;
           codeRef.current.style.transform = `translateY(${offset * 0.15}px)`;
         }
       },
@@ -97,7 +95,6 @@ export function TiltSection() {
     <section id="tilt" ref={sectionRef} className="relative py-32">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <LiveBadge className="mb-4" />
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             3D <span className="text-gradient">Tilt</span>
           </h2>

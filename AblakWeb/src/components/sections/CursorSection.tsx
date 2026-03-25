@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { watchViewport } from "ablak";
 import { useSectionInView } from "../../hooks/useSectionInView";
-import { LiveBadge, CodeBlock } from "../ui";
+import { CodeBlock } from "../ui";
 import { CURSOR_CODE } from "../../data";
 
 const CARDS = [
@@ -23,41 +23,65 @@ export function CursorSection() {
   const codeRef = useRef<HTMLDivElement>(null);
   const inView = useSectionInView(sectionRef);
 
+  // Cached layout values — document-relative, updated only on resize
+  const containerCache = useRef({ left: 0, docTop: 0 });
+  const cardCache = useRef<
+    { docCx: number; docCy: number; w: number; h: number }[]
+  >([]);
+
   useEffect(() => {
     if (!inView) return;
 
+    function measureLayout(scrollTop: number) {
+      const container = containerRef.current;
+      if (container) {
+        const r = container.getBoundingClientRect();
+        containerCache.current = { left: r.left, docTop: r.top + scrollTop };
+      }
+      cardCache.current = cardRefs.current.map((card) => {
+        if (!card) return { docCx: 0, docCy: 0, w: 0, h: 0 };
+        const r = card.getBoundingClientRect();
+        return {
+          docCx: r.left + r.width / 2,
+          docCy: r.top + r.height / 2 + scrollTop,
+          w: r.width,
+          h: r.height,
+        };
+      });
+    }
+
     return watchViewport(
-      ({ mouse, scroll }) => {
+      ({ mouse, scroll, size }) => {
+        if (size.changed || cardCache.current.length === 0) {
+          measureLayout(scroll.top);
+        }
+
         const container = containerRef.current;
         if (container) {
-          const rect = container.getBoundingClientRect();
-          const lx = mouse.x - rect.left;
-          const ly = mouse.y - rect.top;
+          const lx = mouse.x - containerCache.current.left;
+          const ly = mouse.y - (containerCache.current.docTop - scroll.top);
           container.style.background = `radial-gradient(circle at ${lx}px ${ly}px, rgba(99,102,241,0.12) 0%, transparent 50%)`;
         }
 
-        cardRefs.current.forEach((card) => {
+        cardCache.current.forEach(({ docCx, docCy, w, h }, i) => {
+          const card = cardRefs.current[i];
           if (!card) return;
-          const rect = card.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          const dx = mouse.x - cx;
+          const cy = docCy - scroll.top;
+          const dx = mouse.x - docCx;
           const dy = mouse.y - cy;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const maxDist = 300;
-          const factor = Math.max(0, 1 - dist / maxDist);
-          const rx = ((mouse.y - cy) / rect.height) * 12 * factor;
-          const ry = ((cx - mouse.x) / rect.width) * 12 * factor;
+          const factor = Math.max(0, 1 - dist / 300);
+          const rx = ((mouse.y - cy) / h) * 12 * factor;
+          const ry = ((docCx - mouse.x) / w) * 12 * factor;
           card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg)`;
         });
 
         if (codeRef.current) {
-          const sectionTop = sectionRef.current?.offsetTop ?? 0;
-          const offset = scroll.top - sectionTop;
+          const offset = scroll.top - (sectionRef.current?.offsetTop ?? 0);
           codeRef.current.style.transform = `translateY(${offset * 0.15}px)`;
         }
       },
-      { only: ["mouse", "scroll"] },
+      { only: ["mouse", "scroll", "size"] },
     );
   }, [inView]);
 
@@ -65,7 +89,6 @@ export function CursorSection() {
     <section id="cursor" ref={sectionRef} className="relative py-32">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <LiveBadge className="mb-4" />
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-gradient">Cursor</span> Awareness
           </h2>

@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import { watchViewport } from "ablak";
 import { useSectionInView } from "../../hooks/useSectionInView";
-import { LiveBadge, CodeBlock } from "../ui";
+import { CodeBlock } from "../ui";
 import { SCROLL_ANIM_CODE } from "../../data";
 
 const REVEAL_TEXT =
@@ -26,7 +26,7 @@ export function ScrollAnimSection() {
         const section = sectionRef.current;
         if (!section) return;
 
-        const sectionTop = scroll.top + section.getBoundingClientRect().top;
+        const sectionTop = section.offsetTop;
         const scrolled = scroll.top - sectionTop + size.y * 0.3;
         const progress = Math.max(0, Math.min(1, scrolled / (size.y * 1.5)));
         const wordProgress = Math.max(
@@ -66,7 +66,6 @@ export function ScrollAnimSection() {
     <section id="scroll" ref={sectionRef} className="relative py-32">
       <div className="max-w-6xl mx-auto px-6">
         <div className="text-center mb-16">
-          <LiveBadge className="mb-4" />
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Scroll-Scrubbed <span className="text-gradient">Animations</span>
           </h2>

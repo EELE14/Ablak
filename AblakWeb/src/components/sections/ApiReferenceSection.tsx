@@ -1,7 +1,6 @@
 /* Copyright (c) 2026 eele14. All Rights Reserved. */
 import { useEffect, useState } from "react";
 import { getViewportState } from "ablak";
-import { LiveBadge } from "../ui/LiveBadge";
 import { CodeBlock } from "../ui/CodeBlock";
 import { API_FUNCTIONS, API_TYPES } from "../../data/apiReference";
 import type { ViewportState } from "../../types/ablak";
@@ -57,7 +56,6 @@ export function ApiReferenceSection() {
 
         <div className="mb-16 glass rounded-2xl overflow-hidden border border-zinc-700/50">
           <div className="flex items-center gap-3 px-5 py-3 border-b border-zinc-700/50 bg-zinc-800/30">
-            <LiveBadge />
             <span className="text-sm text-zinc-400">Live viewport state</span>
           </div>
           <pre className="p-5 text-sm text-zinc-300 font-mono overflow-x-auto leading-relaxed">
