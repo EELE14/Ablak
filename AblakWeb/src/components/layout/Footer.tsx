@@ -30,7 +30,7 @@ export function Footer({ onShowFull }: FooterProps) {
           >
             GitHub
           </a>
-          <span className="text-zinc-600">AGPL-3.0</span>
+          <span className="text-zinc-600">MIT License</span>
         </div>
         <a
           className="text-zinc-600 hover:text-zinc-300 transition-colors"
